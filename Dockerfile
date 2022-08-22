@@ -1,22 +1,19 @@
 # This is a docker file 
 
-FROM centos:7 
+FROM  centos:7
+    # below code installs telnet & elinks
+RUN yum update -y && \
+    yum install telnet httpd -y  && \
+    yum -y install elinks
+    # below code installs terraform
+RUN yum install curl wget unzip -y && \
+    curl -O https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_amd64.zip && \
+    unzip terraform_1.0.0_linux_amd64.zip && \
+    mv terraform /usr/bin/
+    # below code installs packer
+RUN mv /usr/sbin/packer  /tmp && \
+    yum install -y yum-utils  && \
+    yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo && \
+    yum -y install packer
 
-RUN yum update -y && \ 
-    yum install telnet httpd -y  && \ 
-    mkdir /tmp/photos  && \ 
-    touch /tmp/files 
-
-LABEL appname="shared tools" 
-
-MAINTAINER edwardmd10 
-
-ENV WORDPRESS_DB_HOST="localhost" \ 
-    WORDPRESS_USER="wordpress" \ 
-    WORDPRESS_DB="wordpress" 
-
-ADD https://wordpress.org/latest.zip   /tmp 
-
-EXPOSE 80 
-
-CMD ["/usr/sbin/httpd","-D","FOREGROUND"]  
+LABEL appname="sharedtools" 
